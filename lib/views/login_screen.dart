@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:projectmanagementapp/validations/email_validation.dart';
+import 'package:projectmanagementapp/validations/password_validation.dart';
 
 class LoginScren extends StatefulWidget {
   const LoginScren({super.key});
@@ -9,6 +11,16 @@ class LoginScren extends StatefulWidget {
 }
 
 class _LoginScrenState extends State<LoginScren> {
+  GlobalKey<FormState> globalKey = GlobalKey();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  @override
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,9 +51,15 @@ class _LoginScrenState extends State<LoginScren> {
                 horizontal: 25.w,
               ),
               child: Form(
+                key: globalKey,
                 child: Column(
                   children: [
                     TextFormField(
+                      controller: emailController,
+                      validator: (value) {
+                        final message = EmailValidation.validateEmail(value!);
+                        return message;
+                      },
                       decoration: InputDecoration(
                         labelText: "Email",
                         prefixIcon: Icon(
@@ -60,6 +78,12 @@ class _LoginScrenState extends State<LoginScren> {
                       height: 50.h,
                     ),
                     TextFormField(
+                      controller: passwordController,
+                      validator: (value) {
+                        final message =
+                            PasswordValidation.validatePassword(value!);
+                        return message;
+                      },
                       decoration: InputDecoration(
                         suffixIcon: IconButton(
                             onPressed: () {},
@@ -127,7 +151,9 @@ class _LoginScrenState extends State<LoginScren> {
                       30.sp,
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    if (globalKey.currentState!.validate()) {}
+                  },
                   color: Colors.black,
                   child: Text(
                     "Login",
