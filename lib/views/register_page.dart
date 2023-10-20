@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:projectmanagementapp/controller/auth_controller.dart';
 import 'package:projectmanagementapp/utils/toast_message.dart';
 import 'package:projectmanagementapp/validations/email_validation.dart';
 import 'package:projectmanagementapp/validations/password_validation.dart';
@@ -61,6 +62,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Column(
                   children: [
                     TextFormField(
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                      ),
                       controller: nameController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -70,8 +74,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         }
                       },
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(
+                        errorStyle: TextStyle(fontSize: 13.sp),
+                        prefixIcon: Icon(
                           Icons.person,
+                          size: 15.sp,
                         ),
                         labelStyle: TextStyle(
                           fontSize: 14.sp,
@@ -90,14 +96,19 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 20.h,
                     ),
                     TextFormField(
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                      ),
                       controller: emailController,
                       validator: (value) {
                         final message = EmailValidation.validateEmail(value!);
                         return message;
                       },
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(
+                        errorStyle: TextStyle(fontSize: 13.sp),
+                        prefixIcon: Icon(
                           Icons.email_outlined,
+                          size: 15.sp,
                         ),
                         hintText: "company@gmail.com",
                         labelText: "Enter email",
@@ -110,6 +121,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 20.h,
                     ),
                     TextFormField(
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                      ),
                       controller: passwordController,
                       validator: (value) {
                         final message =
@@ -117,13 +131,16 @@ class _RegisterPageState extends State<RegisterPage> {
                         return message;
                       },
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(
+                        errorStyle: TextStyle(fontSize: 13.sp),
+                        prefixIcon: Icon(
                           Icons.lock,
+                          size: 15.sp,
                         ),
                         suffixIcon: IconButton(
                             onPressed: () {},
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.visibility,
+                              size: 15.sp,
                             )),
                         labelText: "Enter your password",
                         hintText: "**********",
@@ -136,6 +153,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 20.h,
                     ),
                     TextFormField(
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                      ),
                       controller: confirmPasswordController,
                       validator: (value) {
                         final message =
@@ -143,13 +163,16 @@ class _RegisterPageState extends State<RegisterPage> {
                         return message;
                       },
                       decoration: InputDecoration(
-                        prefixIcon: const Icon(
+                        errorStyle: TextStyle(fontSize: 13.sp),
+                        prefixIcon: Icon(
                           Icons.lock,
+                          size: 15.sp,
                         ),
                         suffixIcon: IconButton(
                             onPressed: () {},
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.visibility,
+                              size: 15.sp,
                             )),
                         labelText: "Enter your confirm password",
                         hintText: "**********",
@@ -194,22 +217,28 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Align(
                 alignment: Alignment.topLeft,
                 child: MaterialButton(
+                  height: 45.sp,
+                  minWidth: 123.sp,
                   onPressed: () {
-                    if (_globalKey.currentState!.validate() &&
-                        passwordController.text
-                                .compareTo(confirmPasswordController.text) ==
-                            0) {
-                    } else {
-                      // handel password didnot matched logic
-                      ToastMessage.showToastMessage("Password didnot matched");
+                    if (_globalKey.currentState!.validate()) {
+                      if (passwordController.text
+                              .compareTo(confirmPasswordController.text) ==
+                          0) {
+                        AuthController.createUserr(
+                          email: emailController.text,
+                          password: passwordController.text,
+                          context: context,
+                        );
+                      } else {
+                        ToastMessage.showToastMessage(
+                            "Both password must match");
+                      }
                     }
                   },
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.sp),
                   ),
                   color: Colors.black,
-                  padding: EdgeInsets.only(
-                      left: 31.sp, right: 32.sp, top: 12, bottom: 18.sp),
                   child: Text(
                     "Register",
                     style: TextStyle(

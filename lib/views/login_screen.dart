@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:projectmanagementapp/controller/auth_controller.dart';
+import 'package:projectmanagementapp/provider/show_hide_password_provider.dart';
 import 'package:projectmanagementapp/validations/email_validation.dart';
 import 'package:projectmanagementapp/validations/password_validation.dart';
+import 'package:provider/provider.dart';
 
 class LoginScren extends StatefulWidget {
   const LoginScren({super.key});
@@ -12,6 +15,7 @@ class LoginScren extends StatefulWidget {
 
 class _LoginScrenState extends State<LoginScren> {
   GlobalKey<FormState> globalKey = GlobalKey();
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   @override
@@ -23,6 +27,9 @@ class _LoginScrenState extends State<LoginScren> {
 
   @override
   Widget build(BuildContext context) {
+    // debugPrint("Build method called");
+    final loginProvider =
+        Provider.of<ShowHidePasswordProvider>(context, listen: true);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -55,21 +62,25 @@ class _LoginScrenState extends State<LoginScren> {
                 child: Column(
                   children: [
                     TextFormField(
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                      ),
                       controller: emailController,
                       validator: (value) {
                         final message = EmailValidation.validateEmail(value!);
                         return message;
                       },
                       decoration: InputDecoration(
+                        errorStyle: TextStyle(fontSize: 13.sp),
                         labelText: "Email",
                         prefixIcon: Icon(
                           Icons.email,
-                          size: 20.h,
+                          size: 15.sp,
                         ),
                         hintText: "company@gmail.com",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(
-                            15.sp,
+                            10.sp,
                           ),
                         ),
                       ),
@@ -78,6 +89,10 @@ class _LoginScrenState extends State<LoginScren> {
                       height: 50.h,
                     ),
                     TextFormField(
+                      obscureText: loginProvider.isHiddenForLogin,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                      ),
                       controller: passwordController,
                       validator: (value) {
                         final message =
@@ -85,11 +100,21 @@ class _LoginScrenState extends State<LoginScren> {
                         return message;
                       },
                       decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.visibility,
-                            )),
+                        errorStyle: TextStyle(fontSize: 13.sp),
+                        suffixIcon: Consumer<ShowHidePasswordProvider>(
+                          builder: (context, value, child) {
+                            return IconButton(
+                              onPressed: () {
+                                value.changeStatusForLogin();
+                              },
+                              icon: value.isHiddenForLogin
+                                  ? const Icon(Icons.visibility)
+                                  : const Icon(
+                                      Icons.visibility_off,
+                                    ),
+                            );
+                          },
+                        ),
                         prefixIcon: Icon(
                           Icons.lock,
                           size: 15.sp,
@@ -98,7 +123,7 @@ class _LoginScrenState extends State<LoginScren> {
                         hintText: "***********",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(
-                            13.sp,
+                            10.sp,
                           ),
                         ),
                       ),
@@ -152,7 +177,12 @@ class _LoginScrenState extends State<LoginScren> {
                     ),
                   ),
                   onPressed: () {
-                    if (globalKey.currentState!.validate()) {}
+                    if (globalKey.currentState!.validate()) {
+                      AuthController.signInUser(
+                          email: emailController.text.trim(),
+                          password: passwordController.text,
+                          context: context);
+                    }
                   },
                   color: Colors.black,
                   child: Text(
