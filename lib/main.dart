@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:projectmanagementapp/provider/assign_to_dynamic_dropdown_provider.dart';
+import 'package:projectmanagementapp/provider/date_selection_provider.dart';
 import 'package:projectmanagementapp/provider/designation_list_provider.dart';
 import 'package:projectmanagementapp/provider/employee_image_provider.dart';
 import 'package:projectmanagementapp/provider/show_hide_password_provider.dart';
+import 'package:projectmanagementapp/provider/status_drop_down_provider.dart';
+import 'package:projectmanagementapp/views/add_task_page.dart';
 import 'package:projectmanagementapp/views/add_user_page.dart';
 import 'package:projectmanagementapp/views/get_started_page.dart';
 import 'package:projectmanagementapp/views/home_page.dart';
@@ -34,6 +38,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => EmployeeImageProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => StatusDropDownProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AssignToDynamicDropDownProvider(),
+        ),
+        ChangeNotifierProvider(create: (context) => DateSelectionProvider()),
       ],
       child: ScreenUtilInit(
         minTextAdapt: true,
@@ -57,6 +68,7 @@ class MyApp extends StatelessWidget {
               "landinghomepage": (context) => const LandingHomePage(),
               "mainhomepage": (context) => const MyHomePage(),
               "adduserpage": (context) => const AddUserPage(),
+              "addtaskpage": (context) => const AddTaskPage(),
             },
           );
         },

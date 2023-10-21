@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:projectmanagementapp/controller/add_user_controller.dart';
 import 'package:projectmanagementapp/provider/designation_list_provider.dart';
 import 'package:projectmanagementapp/provider/employee_image_provider.dart';
 import 'package:projectmanagementapp/utils/toast_message.dart';
@@ -21,7 +22,7 @@ class _AddUserPageState extends State<AddUserPage> {
     "Senior Developer",
     "Intern",
     "AI Engineer",
-    "Full Stack Engineeer",
+    "Full Stack Engineer",
     "Flutter Developer",
     "React Developer",
   ];
@@ -42,6 +43,8 @@ class _AddUserPageState extends State<AddUserPage> {
   @override
   Widget build(BuildContext context) {
     final imageProvider = Provider.of<EmployeeImageProvider>(context);
+    final designationListProvider =
+        Provider.of<DesignationListProvider>(context);
     var size = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
@@ -208,13 +211,24 @@ class _AddUserPageState extends State<AddUserPage> {
                     8.sp,
                   )),
                   color: Colors.blue,
-                  onPressed: () {
+                  onPressed: () async {
                     if (globalKey.currentState!.validate()) {
                       if (imageProvider.imagePath == null) {
                         ToastMessage.showToastMessage(
                             "Please select image and add user");
                       } else {
-                        //handle data adding to database here
+                        //handle data inserting to database logic here
+                        await AddUserController.addUser(
+                          nameController.text.trim(),
+                          passwordController.text,
+                          designationListProvider.defaultDesignaiton,
+                          emailController.text,
+                          imageProvider.imagePath!,
+                          context,
+                        );
+                        nameController.clear();
+                        emailController.clear();
+                        passwordController.clear();
                       }
                     }
                   },

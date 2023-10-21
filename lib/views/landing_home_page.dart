@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:projectmanagementapp/views/about_page.dart';
 import 'package:projectmanagementapp/views/home_page.dart';
+import 'package:projectmanagementapp/views/notification_page.dart';
+import 'package:projectmanagementapp/views/task_page.dart';
 
 class LandingHomePage extends StatefulWidget {
   const LandingHomePage({super.key});
@@ -22,6 +24,7 @@ class _LandingHomePageState extends State<LandingHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: PageView(
         controller: pageController,
         physics: const ScrollPhysics(
@@ -29,12 +32,8 @@ class _LandingHomePageState extends State<LandingHomePage> {
         ),
         children: const [
           MyHomePage(),
-          Center(
-            child: Text("Tasks Completed"),
-          ),
-          Center(
-            child: Text("Notifications"),
-          ),
+          TaskPage(),
+          NotificationPage(),
           AboutPage(),
         ],
       ),
