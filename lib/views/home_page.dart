@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:projectmanagementapp/controller/auth_controller.dart';
+import 'package:projectmanagementapp/utils/toast_message.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -22,7 +23,12 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           children: [
             ListTile(
-              onTap: () {},
+              trailing: IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, "userview");
+                },
+                icon: const Icon(Icons.edit_document),
+              ),
               title: Text(
                 "Hi, ${auth.currentUser!.email}",
                 style: TextStyle(

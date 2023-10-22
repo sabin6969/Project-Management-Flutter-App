@@ -27,9 +27,78 @@ class AddTaskController {
     ).then((value) {
       AlertDialogBox.hideProgressBar(context: context);
       ToastMessage.showToastMessage("Task sucessfully assigned to $name");
-    }).onError((error, stackTrace) {
+    }).onError(
+      (error, stackTrace) {
+        AlertDialogBox.hideProgressBar(context: context);
+        ToastMessage.showToastMessage("An error occured try again");
+      },
+    );
+  }
+
+  static updateTask(
+      String taskTitle,
+      String name,
+      String deuDate,
+      String status,
+      String docId,
+      BuildContext context,
+      String description) async {
+    AlertDialogBox.showAlertDialogWithProgressBar(
+        context: context, message: "Updating task");
+    await dbInstance
+        .collection(auth.currentUser!.uid)
+        .doc("tasks")
+        .collection("assignedTasks")
+        .doc(docId)
+        .update(
+      {
+        "name": name,
+        "taskTitle": taskTitle,
+        "deuDate": deuDate,
+        "description": description,
+        "status": status,
+      },
+    ).then((value) {
       AlertDialogBox.hideProgressBar(context: context);
-      ToastMessage.showToastMessage("An error occured try again");
-    });
+      ToastMessage.showToastMessage("Task sucessfully updated");
+      Navigator.of(context).pop();
+    }).onError(
+      (error, stackTrace) {
+        AlertDialogBox.hideProgressBar(context: context);
+        ToastMessage.showToastMessage("An error occured try again");
+      },
+    );
+  }
+
+  static deleteTask(String docId, BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: const Text("Do you want to really delete this task?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("No"),
+            ),
+            TextButton(
+              onPressed: () {
+                dbInstance
+                    .collection(auth.currentUser!.uid)
+                    .doc("tasks")
+                    .collection("assignedTasks")
+                    .doc(docId)
+                    .delete();
+                Navigator.pushReplacementNamed(context, "landinghomepage");
+                ToastMessage.showToastMessage("Task Deleted");
+              },
+              child: const Text("Yes"),
+            )
+          ],
+        );
+      },
+    );
   }
 }

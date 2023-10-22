@@ -107,8 +107,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     ).then((value) {
                       dateSelectionProvider
                           .onSelectedNextDay(value.toString().substring(0, 10));
-                      ToastMessage.showToastMessage(
-                          "${value.toString().substring(0, 10)} selected");
                     }).onError(
                       (error, stackTrace) {
                         ToastMessage.showToastMessage("Date is not picked");
@@ -116,10 +114,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     );
                   },
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Select Date",
+                        dateSelectionProvider.selectedDate,
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
@@ -158,14 +156,19 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       return Consumer<AssignToDynamicDropDownProvider>(
                         builder: (context, value, child) {
                           return DropdownButton(
+                            iconEnabledColor: Colors.red,
+                            padding: const EdgeInsets.all(5),
                             isExpanded: true,
-                            hint: const Text("Assign to"),
+                            hint: Text(
+                              value.assignedUser ?? "Select Employee",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             items: dropdownItems,
                             onChanged: (selectedItem) {
                               value.selected(selectedItem!);
-                              ToastMessage.showToastMessage(
-                                "$selectedItem is assigned for this task",
-                              );
                             },
                           );
                         },

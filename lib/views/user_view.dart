@@ -2,63 +2,35 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:projectmanagementapp/controller/auth_controller.dart';
+import 'package:projectmanagementapp/views/edit_tasks_page.dart';
 
-class TaskPage extends StatefulWidget {
-  const TaskPage({super.key});
+class UserView extends StatefulWidget {
+  const UserView({super.key});
 
   @override
-  State<TaskPage> createState() => _TaskPageState();
+  State<UserView> createState() => _TaskPageState();
 }
 
-class _TaskPageState extends State<TaskPage> {
+class _TaskPageState extends State<UserView> {
   final dataStream = FirebaseFirestore.instance
       .collection(auth.currentUser!.uid)
       .doc("tasks")
       .collection("assignedTasks")
-      .where("status", isEqualTo: "Pending")
       .snapshots();
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.sizeOf(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Edit tasks",
+          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
+        ),
+      ),
       body: SafeArea(
           child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-              ),
-              Text(
-                "Pending Tasks",
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              MaterialButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    14.sp,
-                  ),
-                ),
-                color: Colors.black,
-                onPressed: () {
-                  Navigator.pushNamed(context, "addtaskpage");
-                },
-                child: Text(
-                  "+ Add Task",
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    color: Colors.white,
-                  ),
-                ),
-              )
-            ],
-          ),
           SizedBox(
             height: 20.h,
           ),
@@ -101,7 +73,7 @@ class _TaskPageState extends State<TaskPage> {
                                   borderRadius: BorderRadius.circular(
                                     13.sp,
                                   )),
-                              height: size.height * 0.35,
+                              height: size.height * 0.4,
                               width: size.width,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,14 +145,52 @@ class _TaskPageState extends State<TaskPage> {
                                     height: 20.h,
                                   ),
                                   Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Icon(
-                                        Icons.hourglass_bottom,
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.hourglass_bottom,
+                                          ),
+                                          Text(
+                                            snapshot.data!.docs[index]
+                                                ["status"],
+                                            style: TextStyle(
+                                              fontSize: 16.sp,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        snapshot.data!.docs[index]["status"],
-                                        style: TextStyle(
-                                          fontSize: 16.sp,
+                                      MaterialButton(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        color: Colors.black,
+                                        onPressed: () {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditTaskPage(
+                                                name: snapshot.data!.docs[index]
+                                                    ["name"],
+                                                description: snapshot.data!
+                                                    .docs[index]["description"],
+                                                title: snapshot.data!
+                                                    .docs[index]["taskTitle"],
+                                                docId: snapshot
+                                                    .data!.docs[index].id,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: Text(
+                                          "+ Edit Task",
+                                          style: TextStyle(
+                                              fontSize: 14.sp,
+                                              color: Colors.white),
                                         ),
                                       )
                                     ],
